@@ -38,7 +38,7 @@ public class Controller extends PApplet {
 		// ensure objects fly completely by camera before being clipped
 		frustum(-2, 2, -2*(float)displayHeight/(float)displayWidth, 2*(float)displayHeight/(float)displayWidth, 1, 4000);
 
-		mesh = new MeatMesh(this, new PVector(width/2.0f, height/2.0f, -500), 100, new Dimension3(2000, 2000, 2000));
+		mesh = new MeatMesh(this, new PVector(width/2.0f, height/2.0f, -500), 15, new Dimension3(2000, 2000, 2000));
 		//mesh.jitter();
 
 		//start oscP5
