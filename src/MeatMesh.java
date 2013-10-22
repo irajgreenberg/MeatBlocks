@@ -40,25 +40,30 @@ public class MeatMesh {
 		for(int i=0; i<blocks.length; ++i) {
 			balls.add(new VerletBall(p, new PVector(p.random(-500, 500), p.random(-500, 500), p.random(-500, 500)), .2f));
 			int index = (int)(p.random(3));
+			String  dynamicTexture = "data/"+meatURLs[(int)p.random(meatURLs.length)];
 			switch(index){
 			case 0:
 				blocks[i] = new Block(p, balls.get(i).pos, new PVector(p.random(-p.PI/45.0f, p.PI/45.0f), 
 						p.random(-p.PI/45.0f, p.PI/45.0f), p.random(-p.PI/45.0f, p.PI/45.0f)), 
-						new Dimension3(50, 50, 50), "data/steakmeat_texture.jpg");
+						new Dimension3(p.random(35, 65), p.random(35, 65), p.random(35, 65)), dynamicTexture);
 				blocks[i].setDynamics(new PVector(), new PVector(p.random(-p.PI/80.0f, p.PI/80.0f), p.random(-p.PI/80.0f, p.PI/80.0f), p.random(-p.PI/80.0f, p.PI/80.0f)));
 				break;
 			case 1:
 				blocks[i] = new LBlock(p, balls.get(i).pos, new PVector(p.random(-p.PI/45.0f, p.PI/45.0f), 
 						p.random(-p.PI/45.0f, p.PI/45.0f), p.random(-p.PI/45.0f, p.PI/45.0f)), 
-						new Dimension3(50, 50, 50), "data/porkmeat_texture.jpg", 1.0f, 1.0f);
+						new Dimension3(p.random(35, 65), p.random(35, 65), p.random(35, 65)), dynamicTexture, p.random(.6f, 1.0f), p.random(.6f, 1.0f));
 				blocks[i].setDynamics(new PVector(), new PVector(p.random(-p.PI/80.0f, p.PI/80.0f), p.random(-p.PI/80.0f, p.PI/80.0f), p.random(-p.PI/80.0f, p.PI/80.0f)));
 				break;
 			case 2:
 				blocks[i] = new CrossBlock(p, balls.get(i).pos, new PVector(p.random(-p.PI/45.0f, p.PI/45.0f), 
 						p.random(-p.PI/45.0f, p.PI/45.0f), p.random(-p.PI/45.0f, p.PI/45.0f)), 
-						new Dimension3(50, 50, 50), "data/chopmeat_texture.jpg");
+						new Dimension3(p.random(35, 65), p.random(35, 65), p.random(35, 65)), dynamicTexture);
 				blocks[i].setDynamics(new PVector(), new PVector(p.random(-p.PI/80.0f, p.PI/80.0f), p.random(-p.PI/80.0f, p.PI/80.0f), p.random(-p.PI/80.0f, p.PI/80.0f)));
 				break;
+			}
+			
+			if(i>3){
+				blocks[i].setIsFadeable(true);
 			}
 		}
 		
@@ -127,6 +132,14 @@ public class MeatMesh {
 //			balls.get(i).pos.add(new PVector(p.random(-16, 16), p.random(-16, 16), p.random(-16, 16)));
 //		}
 	}
+	
+	public void jitter(int id, float val){ 
+		balls.get(id).pos.add(new PVector(val, val, val));
+	}
+	
+	public void glow(int id, float val){
+		
+	}
 
 	public void start(){
 		for (int i=0; i<anchors.length; i++) {
@@ -190,15 +203,21 @@ public class MeatMesh {
 		p.rotateZ(p.frameCount*p.PI/720.0f);
 		p.rotateX(p.frameCount*p.PI/540.0f);
 		// sticks
-		p.stroke(.9f, .55f, .55f, .1f);
+		p.stroke(.9f, .55f, .55f, .25f);
 		for(int i=0; i<sticks.size(); ++i) {
 			sticks.get(i).render();
 		}	
 
 		// blocks
 		p.noStroke();
-		p.tint(1.0f, .3f);
+		
 		for(int i=0; i<blocks.length; ++i) {
+			
+			if(blocks[i].dynamicAlpha > blocks[i].baseAlpha && blocks[i].isFadeable){
+				blocks[i].dynamicAlpha-=.01f;
+			}
+			
+			p.tint(1.0f, blocks[i].dynamicAlpha);
 			blocks[i].render();
 		}
 		p.popMatrix();

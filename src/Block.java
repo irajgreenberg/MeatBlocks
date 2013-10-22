@@ -10,7 +10,16 @@ public class Block {
 	protected PVector locSpd=new PVector(), rotSpd=new PVector();
 	protected Dimension3 dim;
 	protected String textureURL;
+	
+	// osc dynamics
+	protected float baseAlpha = .15f;
+	protected float dynamicAlpha = .15f;
+	protected Dimension3 dynamicScale = new Dimension3(1,1,1);
+	protected PVector dynamicFreq = new PVector();
+	protected PVector theta = new PVector();
+	protected boolean isFadeable = false;
 
+	// containers
 	protected ArrayList<PVector> verts;
 	protected ArrayList<Face3> faces;
 	protected ArrayList< Tuple3<Integer, Integer, Integer> > inds;
@@ -68,6 +77,12 @@ public class Block {
 	public void render(){
 		p.pushMatrix();
 		p.translate(loc.x, loc.y, loc.z);
+		p.scale(1.0f+p.abs(p.sin(theta.x)*dynamicScale.w), 
+				1.0f+p.abs(p.sin(theta.y)*dynamicScale.h), 
+				1.0f+p.abs(p.sin(theta.z)*dynamicScale.d));
+		theta.add(dynamicFreq);
+		
+		
 		p.rotateX(rot.x);
 		p.rotateY(rot.y);
 		p.rotateZ(rot.z);
@@ -79,7 +94,22 @@ public class Block {
 		loc.add(locSpd);
 		rot.add(rotSpd);
 	}
+	
+	public void setDynamicScale(Dimension3 dynamicScale){
+		this.dynamicScale = dynamicScale;
+	}
+	
+	public void setDynamicAlpha(float dynamicAlpha){
+		this.dynamicAlpha = dynamicAlpha;
+	}
+	
+	public void setDynamicFreq(PVector dynamicFreq){
+		this.dynamicFreq = dynamicFreq;
+	}
 
+	public void setIsFadeable(boolean isFadeable){
+		this.isFadeable = isFadeable;
+	}
 
 
 }
